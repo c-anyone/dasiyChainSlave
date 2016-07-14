@@ -26,9 +26,14 @@
     <resourcesList name="pin" requiredResourceUri="http://resources/TSSOP38.0.0/devicepackage/0/pin24"/>
   </provided>
   <provided xsi:type="ResourceModel:ResourceGroup" name="23" URI="http://resources/tssop38.0.0/devicepackage/0/23">
+    <upwardMapList xsi:type="ResourceModel:HWResource" href="../../APPS/DIGITAL_IO/v4_0_14/DIGITAL_IO_4.app#//@hwResources.1"/>
     <resourcesList name="pin" requiredResourceUri="http://resources/TSSOP38.0.0/devicepackage/0/pin23"/>
   </provided>
   <provided xsi:type="ResourceModel:ResourceGroup" name="16" URI="http://resources/tssop38.0.0/devicepackage/0/16">
     <resourcesList name="pin" requiredResourceUri="http://resources/TSSOP38.0.0/devicepackage/0/pin16"/>
+  </provided>
+  <provided xsi:type="ResourceModel:ResourceGroup" name="27" URI="http://resources/tssop38.0.0/devicepackage/0/27">
+    <upwardMapList xsi:type="ResourceModel:HWResource" href="../../APPS/DIGITAL_IO/v4_0_14/DIGITAL_IO_5.app#//@hwResources.1"/>
+    <resourcesList name="pin" requiredResourceUri="http://resources/TSSOP38.0.0/devicepackage/0/pin27"/>
   </provided>
 </ResourceModel:DevicePackage>

@@ -33,9 +33,6 @@ void packetHandler(uint8_t,uint8_t*);
 void blinkNoTimes(uint8_t count);
 void setPWM(PWM_SETTINGS_t);
 
-
-
-
 int main(void)
 {
 	DAVE_STATUS_t status;
@@ -69,6 +66,8 @@ void blinkNoTimes(uint8_t count) {
 
 void setPWM(PWM_SETTINGS_t led) {
 	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, led.led1);
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_1, led.led2);
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_2, led.led3);
 }
 
 void packetHandler(uint8_t length,uint8_t *buf){

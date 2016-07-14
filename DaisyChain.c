@@ -86,12 +86,12 @@ void min_frame_received(uint8_t buf[], uint8_t len, uint8_t address) {
 			min_tx_frame(address,framebuf,len);
 			break;
 		case DAISY_BROADCAST:			//broadcast, retransmit and ignore for now
-			//			packetHandler();
 			min_tx_frame(address,framebuf,len);
 			break;
 		case DAISY_ADDR_COUNT:
 			//set address to new counter
-			updateAddress(++buf[0]);
+			framebuf[0] += 1;
+			updateAddress(framebuf[0]);
 			//and retransmit with increased counter value
 			min_tx_frame(address,framebuf,len);
 			break;
@@ -108,10 +108,6 @@ void daisySendData(uint8_t address,uint8_t length,uint8_t* data) {
 	if(length > 0)
 		min_tx_frame(address,data,length);
 }
-
-//void handleFrameReception(void) {
-//	USBD_VCOM_SendData((int8_t*)framebuf,frameLength);
-//}
 
 static void updateAddress(uint8_t newAddress) {
 	daisy_address = newAddress;
