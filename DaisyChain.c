@@ -83,25 +83,24 @@ void min_frame_received(uint8_t buf[], uint8_t len, uint8_t address) {
 	if(address != daisy_address) {
 		switch(address) {
 		case DAISY_ERROR:				// in case of error, retransmit to master to handle
-			min_tx_frame(address,framebuf,len);
-			break;
-		case DAISY_BROADCAST:			//broadcast, retransmit and ignore for now
-			min_tx_frame(address,framebuf,len);
 			break;
 		case DAISY_ADDR_COUNT:
 			//set address to new counter
 			framebuf[0] += 1;
 			updateAddress(framebuf[0]);
 			//and retransmit with increased counter value
-			min_tx_frame(address,framebuf,len);
+			break;
+		case DAISY_BROADCAST:			//broadcast, retransmit and ignore for now
 			break;
 		}
+		// if not our address,always retransmit
+		min_tx_frame(address,framebuf,len);
 	}
-	//		else {
+
 	// call data handler callback here
 	if(rxCallback != NULL)
 		rxCallback(len,framebuf);
-	//	}
+
 }
 
 void daisySendData(uint8_t address,uint8_t length,uint8_t* data) {
