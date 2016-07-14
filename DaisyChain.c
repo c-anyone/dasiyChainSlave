@@ -80,16 +80,20 @@ void min_frame_received(uint8_t buf[], uint8_t len, uint8_t address) {
 	frameLength = len;
 	memcpy(framebuf,buf,len);		// copy the received data from the rxBuffer
 
+	if(address == daisy_address || address == DAISY_BROADCAST) {
+		if(rxCallback != NULL)
+			rxCallback(len,framebuf);
+
+	}
 	if(address != daisy_address) {
 		switch(address) {
-		case DAISY_ERROR:				// in case of error, retransmit to master to handle
-			break;
 		case DAISY_ADDR_COUNT:
 			//set address to new counter
 			framebuf[0] += 1;
 			updateAddress(framebuf[0]);
 			//and retransmit with increased counter value
 			break;
+		case DAISY_ERROR:				// in case of error, retransmit to master to handle
 		case DAISY_BROADCAST:			//broadcast, retransmit and ignore for now
 			break;
 		}
@@ -98,8 +102,7 @@ void min_frame_received(uint8_t buf[], uint8_t len, uint8_t address) {
 	}
 
 	// call data handler callback here
-	if(rxCallback != NULL)
-		rxCallback(len,framebuf);
+
 
 }
 
