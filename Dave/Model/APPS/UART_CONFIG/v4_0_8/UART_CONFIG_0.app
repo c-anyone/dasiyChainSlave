@@ -35,4 +35,8 @@
     <downwardMapList xsi:type="ResourceModel:VirtualSignal" href="../../INTERRUPT/v4_0_8/INTERRUPT_0.app#//@virtualSignals.0"/>
     <targetVirtualSignal href="../../INTERRUPT/v4_0_8/INTERRUPT_0.app#//@virtualSignals.0"/>
   </connections>
+  <connections URI="http://resources/4.0.8/app/UART_CONFIG/0/http://resources/4.0.8/app/UART_CONFIG/0/vs_uart_standard_rx_event/http://resources/4.0.8/app/INTERRUPT/0/vs_nvic_signal_in" sourceSignal="standard_receive_event" targetSignal="sr_irq" srcVirtualSignal="//@virtualSignals.7">
+    <downwardMapList xsi:type="ResourceModel:VirtualSignal" href="../../INTERRUPT/v4_0_8/INTERRUPT_0.app#//@virtualSignals.0"/>
+    <targetVirtualSignal href="../../INTERRUPT/v4_0_8/INTERRUPT_0.app#//@virtualSignals.0"/>
+  </connections>
 </ResourceModel:App>

@@ -20,10 +20,21 @@
  * invoking the APP initialization dispatcher routine - DAVE_Init() and hosting the place-holder for user application
  * code.
  */
+typedef struct {
+	uint16_t identifier;
+	uint16_t led1;		// zero equals off
+	uint16_t led2;
+	uint16_t led3;
+} PWM_SETTINGS_t;
+
 static uint8_t blinks = 0;
 
 void packetHandler(uint8_t,uint8_t*);
 void blinkNoTimes(uint8_t count);
+void setPWM(PWM_SETTINGS_t);
+
+
+
 
 int main(void)
 {
@@ -55,9 +66,17 @@ void blinkNoTimes(uint8_t count) {
 	blinks = 2*count;
 	TIMER_Start(&TIMER_0);
 }
+
+void setPWM(PWM_SETTINGS_t led) {
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, led.led1);
+}
+
 void packetHandler(uint8_t length,uint8_t *buf){
+	blinkNoTimes(3);
 	if(length>0) {
-		blinkNoTimes(buf[0]);
+		if (length == sizeof(PWM_SETTINGS_t)) {
+			setPWM((*(PWM_SETTINGS_t*)buf));
+		}
 	}
 }
 

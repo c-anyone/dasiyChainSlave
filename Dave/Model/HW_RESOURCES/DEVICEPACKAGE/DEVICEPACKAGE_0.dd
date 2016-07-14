@@ -28,4 +28,7 @@
   <provided xsi:type="ResourceModel:ResourceGroup" name="23" URI="http://resources/tssop38.0.0/devicepackage/0/23">
     <resourcesList name="pin" requiredResourceUri="http://resources/TSSOP38.0.0/devicepackage/0/pin23"/>
   </provided>
+  <provided xsi:type="ResourceModel:ResourceGroup" name="16" URI="http://resources/tssop38.0.0/devicepackage/0/16">
+    <resourcesList name="pin" requiredResourceUri="http://resources/TSSOP38.0.0/devicepackage/0/pin16"/>
+  </provided>
 </ResourceModel:DevicePackage>

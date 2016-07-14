@@ -2,7 +2,9 @@
 <ResourceModel:App xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ResourceModel="http://www.infineon.com/Davex/Resource.ecore" name="DIGITAL_IO" URI="http://resources/4.0.14/app/DIGITAL_IO/1" description="The DIGITAL_IO APP is used to configure &#xA; a port pin as digital Input/Output." mode="NOTSHARABLE" version="4.0.14" minDaveVersion="4.0.0" instanceLabel="LED_1" appLabel="">
   <properties provideInit="true"/>
   <virtualSignals name="software controlled output signal" URI="http://resources/4.0.14/app/DIGITAL_IO/1/vs_digital_io_sw_pin" hwSignal="swreg_out" hwResource="//@hwResources.0"/>
-  <virtualSignals name="pin" URI="http://resources/4.0.14/app/DIGITAL_IO/1/vs_digital_io_pad_pin" hwSignal="pad" hwResource="//@hwResources.0" visible="true"/>
+  <virtualSignals name="pin" URI="http://resources/4.0.14/app/DIGITAL_IO/1/vs_digital_io_pad_pin" hwSignal="pad" hwResource="//@hwResources.0" visible="true">
+    <upwardMapList xsi:type="ResourceModel:Connections" href="../../PWM_CCU4/v4_1_18/PWM_CCU4_0.app#//@connections.7"/>
+  </virtualSignals>
   <virtualSignals name="hardware pin control" URI="http://resources/4.0.14/app/DIGITAL_IO/1/vs_digital_io_hwsel" hwSignal="hw_o" hwResource="//@hwResources.0" required="false"/>
   <virtualSignals name="pin_signal" URI="http://resources/4.0.14/app/DIGITAL_IO/1/__pin_vs_digital_io_pad_pin" hwSignal="pin" hwResource="//@hwResources.1"/>
   <hwResources name="pin" URI="http://resources/4.0.14/app/DIGITAL_IO/1/hwres_port_pin" resourceGroupUri="port/p/sv0/pad/*" solverVariable="true" mResGrpUri="port/p/sv0/pad/*">

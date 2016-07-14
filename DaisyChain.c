@@ -86,7 +86,7 @@ void min_frame_received(uint8_t buf[], uint8_t len, uint8_t address) {
 			min_tx_frame(address,framebuf,len);
 			break;
 		case DAISY_BROADCAST:			//broadcast, retransmit and ignore for now
-			handleFrameReception();
+			//			packetHandler();
 			min_tx_frame(address,framebuf,len);
 			break;
 		case DAISY_ADDR_COUNT:
@@ -96,11 +96,12 @@ void min_frame_received(uint8_t buf[], uint8_t len, uint8_t address) {
 			min_tx_frame(address,framebuf,len);
 			break;
 		}
-	} else {
-		// call data handler callback here
-		if(rxCallback != NULL)
-			rxCallback(len,framebuf);
 	}
+	//		else {
+	// call data handler callback here
+	if(rxCallback != NULL)
+		rxCallback(len,framebuf);
+	//	}
 }
 
 void daisySendData(uint8_t address,uint8_t length,uint8_t* data) {
