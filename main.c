@@ -56,7 +56,7 @@ int main(void)
 	/* Placeholder for user application code. The while loop below can be replaced with user application code. */
 	while(1U)
 	{
-
+		daisyWorker();
 	}
 }
 void blinkNoTimes(uint8_t count) {
@@ -68,6 +68,10 @@ void setPWM(PWM_SETTINGS_t led) {
 	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, led.led1);
 	PWM_CCU4_SetDutyCycle(&PWM_CCU4_1, led.led2);
 	PWM_CCU4_SetDutyCycle(&PWM_CCU4_2, led.led3);
+}
+
+void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t *buf, size_t length) {
+	blinkNoTimes(length);
 }
 
 void packetHandler(uint8_t length,uint8_t *buf){
