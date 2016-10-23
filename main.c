@@ -9,7 +9,7 @@
 
 
 #include <DAVE.h>                 //Declarations from DAVE Code Generation (includes SFR declaration)
-#include "DaisyChain.h"
+#include "./xmc_daisyChain/DaisyChain.h"
 
 /**
 
@@ -50,7 +50,7 @@ int main(void)
 		}
 	}
 	daisyInit(&UART_DAISY);
-	daisySetRxCallback(&packetHandler);
+	//daisySetRxCallback(&packetHandler);
 
 	blinkNoTimes(10);
 	/* Placeholder for user application code. The while loop below can be replaced with user application code. */

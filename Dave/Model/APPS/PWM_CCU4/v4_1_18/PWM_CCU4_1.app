@@ -24,7 +24,7 @@
     <downwardMapList xsi:type="ResourceModel:App" href="../../GLOBAL_CCU4/v4_1_12/GLOBAL_CCU4_0.app#/"/>
   </requiredApps>
   <hwResources name="CC4 Config" URI="http://resources/4.1.18/app/PWM_CCU4/1/hwres_ccu4_cc4_slice" resourceGroupUri="peripheral/ccu4/*/cc4/*" mResGrpUri="peripheral/ccu4/*/cc4/*">
-    <downwardMapList xsi:type="ResourceModel:ResourceGroup" href="../../../HW_RESOURCES/CCU40/CCU40_0.dd#//@provided.14"/>
+    <downwardMapList xsi:type="ResourceModel:ResourceGroup" href="../../../HW_RESOURCES/CCU40/CCU40_0.dd#//@provided.3"/>
   </hwResources>
   <hwResources name="PWM_CCU4 Channel Out" URI="http://resources/4.1.18/app/PWM_CCU4/1/hwres_port_channel_out" resourceGroupUri="" required="false" mResGrpUri="port/p/*/pad/*"/>
   <hwResources name="PWM_CCU4 Channel Out" URI="http://resources/4.1.18/app/PWM_CCU4/1/__pin_hwres_port_channel_out" resourceGroupUri="" required="false" mResGrpUri="devicepackage/0/*"/>
