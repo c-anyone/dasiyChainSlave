@@ -18,7 +18,7 @@
   <virtualSignals name="ps" URI="http://resources/4.1.18/app/PWM_CCU4/2/vs_ccu4_cc4_ps" hwSignal="ps" hwResource="//@hwResources.0" visible="true"/>
   <virtualSignals name="mci_input" URI="http://resources/4.1.18/app/PWM_CCU4/2/vs_ccu4_cc4_mci" hwSignal="mci" hwResource="//@hwResources.0" visible="true"/>
   <virtualSignals name="mcss_input" URI="http://resources/4.1.18/app/PWM_CCU4/2/vs_ccu4_cc4_mcss" hwSignal="mcss" hwResource="//@hwResources.0" visible="true"/>
-  <virtualSignals name="PWM_CCU4 Channel Out" URI="http://resources/4.1.18/app/PWM_CCU4/2/vs_port_channel_out" hwSignal="pad" hwResource="//@hwResources.1" required="false"/>
+  <virtualSignals name="PWM_CCU4 Channel Out" URI="http://resources/4.1.18/app/PWM_CCU4/2/vs_port_channel_out" hwSignal="pad" hwResource="//@hwResources.1"/>
   <virtualSignals name="PWM_CCU4 Channel Out_signal" URI="http://resources/4.1.18/app/PWM_CCU4/2/__pin_vs_port_channel_out" hwSignal="pin" hwResource="//@hwResources.2"/>
   <requiredApps URI="http://resources/4.1.18/app/PWM_CCU4/2/pwm_ccu4_app_global_ccu4_cc4" requiredAppName="GLOBAL_CCU4" requiringMode="SHARABLE">
     <downwardMapList xsi:type="ResourceModel:App" href="../../GLOBAL_CCU4/v4_1_12/GLOBAL_CCU4_0.app#/"/>
@@ -26,8 +26,12 @@
   <hwResources name="CC4 Config" URI="http://resources/4.1.18/app/PWM_CCU4/2/hwres_ccu4_cc4_slice" resourceGroupUri="peripheral/ccu4/*/cc4/*" mResGrpUri="peripheral/ccu4/*/cc4/*">
     <downwardMapList xsi:type="ResourceModel:ResourceGroup" href="../../../HW_RESOURCES/CCU40/CCU40_0.dd#//@provided.27"/>
   </hwResources>
-  <hwResources name="PWM_CCU4 Channel Out" URI="http://resources/4.1.18/app/PWM_CCU4/2/hwres_port_channel_out" resourceGroupUri="" required="false" mResGrpUri="port/p/*/pad/*"/>
-  <hwResources name="PWM_CCU4 Channel Out" URI="http://resources/4.1.18/app/PWM_CCU4/2/__pin_hwres_port_channel_out" resourceGroupUri="" required="false" mResGrpUri="devicepackage/0/*"/>
+  <hwResources name="PWM_CCU4 Channel Out" URI="http://resources/4.1.18/app/PWM_CCU4/2/hwres_port_channel_out" resourceGroupUri="port/p/*/pad/*" mResGrpUri="port/p/*/pad/*">
+    <downwardMapList xsi:type="ResourceModel:ResourceGroup" href="../../../HW_RESOURCES/Port0/Port0_0.dd#//@provided.33"/>
+  </hwResources>
+  <hwResources name="PWM_CCU4 Channel Out" URI="http://resources/4.1.18/app/PWM_CCU4/2/__pin_hwres_port_channel_out" resourceGroupUri="devicepackage/0/*" mResGrpUri="devicepackage/0/*">
+    <downwardMapList xsi:type="ResourceModel:ResourceGroup" href="../../../HW_RESOURCES/DEVICEPACKAGE/DEVICEPACKAGE_0.dd#//@provided.11"/>
+  </hwResources>
   <connections URI="http://resources/4.1.18/app/PWM_CCU4/2/http://resources/4.1.18/app/PWM_CCU4/2/vs_ccu4_cc4_global/http://resources/4.1.18/app/PWM_CCU4/2/vs_ccu4_cc4_global_signal" systemDefined="true" sourceSignal="ccu4_global" targetSignal="CCU4_global_signal" targetVirtualSignal="//@virtualSignals.0" proxySrcVirtualSignalUri="http://resources/4.1.12/app/GLOBAL_CCU4/0/vs_global_ccu4_globalsignal" containingProxySignal="true">
     <downwardMapList xsi:type="ResourceModel:VirtualSignal" href="../../GLOBAL_CCU4/v4_1_12/GLOBAL_CCU4_0.app#//@virtualSignals.0"/>
     <srcVirtualSignal href="../../GLOBAL_CCU4/v4_1_12/GLOBAL_CCU4_0.app#//@virtualSignals.0"/>
@@ -41,7 +45,7 @@
   <connections URI="http://resources/4.1.18/app/PWM_CCU4/2/http://resources/4.1.18/app/PWM_CCU4/2/vs_ccu4_cc4_global_sync_start/http://resources/4.1.18/app/PWM_CCU4/2/vs_ccu4_cc4_gp2_unsync" systemDefined="true" sourceSignal="ccu4_global_start" targetSignal="ext_event2" required="false" targetVirtualSignal="//@virtualSignals.10" proxySrcVirtualSignalUri="http://resources/4.1.12/app/GLOBAL_CCU4/0/vs_global_ccu4_gsc_enable" containingProxySignal="true">
     <srcVirtualSignal href="../../GLOBAL_CCU4/v4_1_12/GLOBAL_CCU4_0.app#//@virtualSignals.2"/>
   </connections>
-  <connections URI="http://resources/4.1.18/app/PWM_CCU4/2/http://resources/4.1.18/app/PWM_CCU4/2/vs_ccu4_cc4_channel_out_signal/http://resources/4.1.18/app/PWM_CCU4/2/vs_port_channel_out" systemDefined="true" sourceSignal="pwm_output" targetSignal="PWM_CCU4 Channel Out" required="false" srcVirtualSignal="//@virtualSignals.7" targetVirtualSignal="//@virtualSignals.17"/>
+  <connections URI="http://resources/4.1.18/app/PWM_CCU4/2/http://resources/4.1.18/app/PWM_CCU4/2/vs_ccu4_cc4_channel_out_signal/http://resources/4.1.18/app/PWM_CCU4/2/vs_port_channel_out" systemDefined="true" sourceSignal="pwm_output" targetSignal="PWM_CCU4 Channel Out" srcVirtualSignal="//@virtualSignals.7" targetVirtualSignal="//@virtualSignals.17"/>
   <connections URI="http://resources/4.1.18/app/PWM_CCU4/2/http://resources/4.1.18/app/PWM_CCU4/2/vs_port_channel_out/http://resources/4.1.18/app/PWM_CCU4/2/__pin_vs_port_channel_out" systemDefined="true" sourceSignal="PWM_CCU4 Channel Out" targetSignal="PWM_CCU4 Channel Out_signal" srcVirtualSignal="//@virtualSignals.17" targetVirtualSignal="//@virtualSignals.18"/>
   <connections URI="http://resources/4.1.18/app/PWM_CCU4/2/http://resources/4.1.18/app/PWM_CCU4/2/__pin_vs_port_channel_out/http://resources/4.1.18/app/PWM_CCU4/2/vs_port_channel_out" systemDefined="true" sourceSignal="PWM_CCU4 Channel Out_signal" targetSignal="PWM_CCU4 Channel Out" srcVirtualSignal="//@virtualSignals.18" targetVirtualSignal="//@virtualSignals.17"/>
   <connections URI="http://resources/4.1.18/app/PWM_CCU4/2/http://resources/4.1.18/app/PWM_CCU4/2/vs_ccu4_cc4_channel_out_signal/http://resources/4.0.14/app/DIGITAL_IO/5/vs_digital_io_pad_pin" sourceSignal="pwm_output" targetSignal="pin" srcVirtualSignal="//@virtualSignals.7">

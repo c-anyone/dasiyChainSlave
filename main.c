@@ -13,8 +13,6 @@
 #include "i2c_handler.h"
 #include "led_commands.h"
 
-#define DAISY_SLAVE_DEVICE
-
 /**
 
  * @brief main() - Application entry point
@@ -30,6 +28,11 @@ static uint8_t blinks = 0;
 
 void packetHandler(uint8_t,uint8_t*);
 void blinkNoTimes(uint8_t count);
+
+//static PWM_SETTINGS_t led_settings = {.led1 = 0x00, .led2 = 0x00, .led3 = 0x00};
+PWM_SETTINGS_t pwm_off = {.led1 = 0x00, .led2 = 0x00, .led3 = 0x00};
+PWM_SETTINGS_t pwm_on = {.led1 = 0xFF, .led2 = 0xFF, .led3 = 0xFF};
+
 static inline void setPWM(PWM_SETTINGS_t);
 static inline void startPWM();
 static inline void stopPWM();
@@ -66,26 +69,32 @@ void blinkNoTimes(uint8_t count) {
 	TIMER_Start(&TIMER_0);
 }
 
-static inline void setPWM(PWM_SETTINGS_t led) {
-	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, led.led1);
-	PWM_CCU4_SetDutyCycle(&PWM_CCU4_1, led.led2);
-	PWM_CCU4_SetDutyCycle(&PWM_CCU4_2, led.led3);
+#define CAST_TO_UINT32_T(x) (((uint32_t)(x))<<16)
+
+static void setPWM(PWM_SETTINGS_t led) {
+	uint32_t tmp = CAST_TO_UINT32_T(led.led1);
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, CAST_TO_UINT32_T(led.led1));
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_1, CAST_TO_UINT32_T(led.led2));
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_2, CAST_TO_UINT32_T(led.led3));
 }
 
-static inline void startPWM() {
-	PWM_CCU4_Start(&PWM_CCU4_0);
+static void startPWM() {
+	setPWM(pwm_on);
+/*	PWM_CCU4_Start(&PWM_CCU4_0);
 	PWM_CCU4_Start(&PWM_CCU4_1);
-	PWM_CCU4_Start(&PWM_CCU4_2);
+	PWM_CCU4_Start(&PWM_CCU4_2);*/
 }
 
-static inline void stopPWM() {
-	PWM_CCU4_Stop(&PWM_CCU4_0);
+static void stopPWM() {
+	setPWM(pwm_off);
+/*	PWM_CCU4_Stop(&PWM_CCU4_0);
 	PWM_CCU4_Stop(&PWM_CCU4_1);
-	PWM_CCU4_Stop(&PWM_CCU4_2);
+	PWM_CCU4_Stop(&PWM_CCU4_2); */
 }
 
 
 void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t *buf, size_t length) {
+	blinkNoTimes(buf[0]+1);
 	switch((led_command_t)buf[0]) {
 	case LED_COMMAND_ON:
 		startPWM();

@@ -1081,7 +1081,7 @@
     </children>
     <children>
       <properties key="uri" value="http://resources/4.0.14/app/DIGITAL_IO/5/vs_digital_io_hwsel"/>
-      <graphicsAlgorithm xsi:type="al:Text" lineStyle="UNSPECIFIED" width="105" height="20" x="30" y="65" horizontalAlignment="ALIGNMENT_RIGHT" value="hardware pin control"/>
+      <graphicsAlgorithm xsi:type="al:Text" foreground="//@colors.2" lineStyle="UNSPECIFIED" width="105" height="20" x="30" y="65" style="//@styles.0/@styles.2" horizontalAlignment="ALIGNMENT_RIGHT" value="hardware pin control"/>
     </children>
   </children>
   <children xsi:type="pi:ContainerShape" visible="true" active="true">
