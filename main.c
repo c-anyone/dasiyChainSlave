@@ -24,18 +24,23 @@
  */
 
 
+extern uint8_t daisy_address;
+
 static uint8_t blinks = 0;
 
-void packetHandler(uint8_t,uint8_t*);
 void blinkNoTimes(uint8_t count);
 
-//static PWM_SETTINGS_t led_settings = {.led1 = 0x00, .led2 = 0x00, .led3 = 0x00};
-PWM_SETTINGS_t pwm_off = {.led1 = 0x00, .led2 = 0x00, .led3 = 0x00};
-PWM_SETTINGS_t pwm_on = {.led1 = 10000, .led2 = 10000, .led3 = 10000};
+#define PWM_ALL_OFF {.led1 = 0, .led2 = 0, .led3 = 0}
+#define PWM_ALL_ON	{.led1 = 10000, .led2 = 10000, .led3 = 10000}
 
-static inline void setPWM(PWM_SETTINGS_t);
-static inline void startPWM();
-static inline void stopPWM();
+//static PWM_SETTINGS_t led_settings = {.led1 = 0x00, .led2 = 0x00, .led3 = 0x00};
+
+
+PWM_SETTINGS_t pwm_current = {.led1 = 0,.led2 = 0,.led3 = 0};
+
+void setPWM(PWM_SETTINGS_t);
+static void startPWM();
+static void stopPWM();
 
 int main(void)
 {
@@ -69,14 +74,19 @@ void blinkNoTimes(uint8_t count) {
 	TIMER_Start(&TIMER_0);
 }
 
-static void setPWM(PWM_SETTINGS_t led) {
-//	uint32_t tmp = CAST_TO_UINT32_T(led.led1);
-	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, (led.led1 < 10000 ? led.led1 : 10000));
-	PWM_CCU4_SetDutyCycle(&PWM_CCU4_1, (led.led2 < 10000 ? led.led2 : 10000));
-	PWM_CCU4_SetDutyCycle(&PWM_CCU4_2, (led.led3 < 10000 ? led.led3 : 10000));
+#define SET_PWM_TO_MAX(x)  ((x) < 10000 ? (x) : 10000)
+
+void setPWM(PWM_SETTINGS_t led) {
+	pwm_current.led1 = SET_PWM_TO_MAX(led.led1);
+	pwm_current.led2 = SET_PWM_TO_MAX(led.led2);
+	pwm_current.led3 = SET_PWM_TO_MAX(led.led3);
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, pwm_current.led1);
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_1, pwm_current.led2);
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_2, pwm_current.led3);
 }
 
 static void startPWM() {
+	PWM_SETTINGS_t pwm_on = {.led1 = 10000, .led2 = 10000, .led3 = 10000};
 	setPWM(pwm_on);
 /*	PWM_CCU4_Start(&PWM_CCU4_0);
 	PWM_CCU4_Start(&PWM_CCU4_1);
@@ -84,6 +94,7 @@ static void startPWM() {
 }
 
 static void stopPWM() {
+	PWM_SETTINGS_t pwm_off = {.led1 = 0x00, .led2 = 0x00, .led3 = 0x00};
 	setPWM(pwm_off);
 /*	PWM_CCU4_Stop(&PWM_CCU4_0);
 	PWM_CCU4_Stop(&PWM_CCU4_1);
@@ -92,8 +103,13 @@ static void stopPWM() {
 
 
 void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t *buf, size_t length) {
+	uint8_t packet[DAISY_MAX_PACKET_SIZE];
+	led_command_t cmd;
+
+	cmd = (led_command_t)buf[0];
 	blinkNoTimes(buf[0]+1);
-	switch((led_command_t)buf[0]) {
+	memcpy(packet,buf,length);
+	switch(cmd) {
 	case LED_COMMAND_ON:
 		startPWM();
 		break;
@@ -103,7 +119,7 @@ void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t
 	case LED_COMMAND_SET:
 		if(length-1 < sizeof(PWM_SETTINGS_t)) //not enough data in the struct
 			return;
-		setPWM((*(PWM_SETTINGS_t*)(buf+1)));	//+1 because buf[0] is the command identifier
+		setPWM(*((PWM_SETTINGS_t*)(packet+1)));	//+1 because buf[0] is the command identifier
 		break;
 	case LED_COMMAND_GET_TEMP:
 		// should return the last read temperature to the sender,
@@ -117,16 +133,10 @@ void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t
 	case LED_COMMAND_GET_PWM_SETTINGS:
 		//	this should return the pwm settings
 		// same as above
+		packet[0] = (uint8_t)LED_COMMAND_GET_PWM_SETTINGS;
+		memcpy(packet+1,&pwm_current,sizeof(PWM_SETTINGS_t));
+		daisySendData(DAISY_ADDR_MASTER,daisy_address,packet,sizeof(PWM_SETTINGS_t)+1);
 		break;
-	}
-}
-
-void packetHandler(uint8_t length,uint8_t *buf){
-	blinkNoTimes(3);
-	if(length>0) {
-		if (length == sizeof(PWM_SETTINGS_t)) {
-			setPWM((*(PWM_SETTINGS_t*)buf));
-		}
 	}
 }
 
