@@ -8,6 +8,6 @@
     <downwardMapList xsi:type="ResourceModel:App" href="../../CPU_CTRL_XMC1/v4_0_6/CPU_CTRL_XMC1_0.app#/"/>
   </requiredApps>
   <hwResources name="NVIC Node" URI="http://resources/4.0.8/app/INTERRUPT/2/hwres_nvicnode" resourceGroupUri="peripheral/cpu/0/nvic/interrupt/*" mResGrpUri="peripheral/cpu/0/nvic/interrupt/*">
-    <downwardMapList xsi:type="ResourceModel:ResourceGroup" href="../../../HW_RESOURCES/CPU/CPU_0.dd#//@provided.4"/>
+    <downwardMapList xsi:type="ResourceModel:ResourceGroup" href="../../../HW_RESOURCES/CPU/CPU_0.dd#//@provided.8"/>
   </hwResources>
 </ResourceModel:App>

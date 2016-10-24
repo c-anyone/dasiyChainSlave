@@ -5,15 +5,15 @@
  * 	0xA2	0xA3
  */
 
-#define EEPROM_WRITE (0xA0)
-#define EEPROM_READ (0xA1)
-#define EEPROM_PAGESIZE	(0x10)
+#include <stddef.h>
+#include <stdint.h>
+
 
 typedef void (*i2c_rx_cb_t)(void);
 typedef void (*i2c_tx_cb_t)(void);
 
-void i2c_read_bytes(uint8_t *rBuf,size_t len,uint8_t* address,size_t addrLen);
-void i2c_write_bytes(uint8_t *buf,size_t len,uint8_t* address,size_t addrLen);
+void i2c_write_bytes(uint8_t i2c_addr, uint8_t *buf, size_t len, uint8_t* ptr_addr, size_t addrLen);
+void i2c_read_bytes(uint8_t i2c_addr, uint8_t *buf, size_t len, uint8_t* address,size_t addrLen);
 
 void i2c_set_rx_callback(i2c_rx_cb_t);
 void i2c_clear_rx_callback(void);

@@ -10,6 +10,7 @@
 
 #include <DAVE.h>                 //Declarations from DAVE Code Generation (includes SFR declaration)
 #include "./xmc_daisyChain/DaisyChain.h"
+#include "i2c_handler.h"
 
 #define DAISY_SLAVE_DEVICE
 
@@ -52,7 +53,8 @@ int main(void)
 		}
 	}
 	daisyInit(&UART_DAISY);
-	//daisySetRxCallback(&packetHandler);
+
+	readLedDataEeprom();
 
 	blinkNoTimes(10);
 	/* Placeholder for user application code. The while loop below can be replaced with user application code. */

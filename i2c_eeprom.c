@@ -16,7 +16,9 @@ static uint8_t* rxBuf;
 static size_t txlen;
 static size_t rxlen;
 
-void i2c_write_bytes(uint8_t *buf, size_t len, uint8_t* address, size_t addrLen) {
+static uint8_t device_addr = 0;
+
+void i2c_write_bytes(uint8_t i2c_addr, uint8_t *buf, size_t len, uint8_t* ptr_addr, size_t addrLen) {
 	// set up for followup transmit (address is transmitted first)
 
 	/*
@@ -28,19 +30,21 @@ void i2c_write_bytes(uint8_t *buf, size_t len, uint8_t* address, size_t addrLen)
 	state = I2C_STATE_TX;
 	txBuf = buf;
 	txlen = len;
+	device_addr = i2c_addr;
 
 	// Transmit the internal memory address
-	I2C_MASTER_Transmit(&I2C_MASTER_0, true, EEPROM_WRITE, address, addrLen,
+	I2C_MASTER_Transmit(&I2C_MASTER_0, true, device_addr, ptr_addr, addrLen,
 	false);
 }
 
-void i2c_read_bytes(uint8_t *rBuf, size_t len, uint8_t* address, size_t addrLen) {
+void i2c_read_bytes(uint8_t i2c_addr, uint8_t *rBuf, size_t len, uint8_t* ptr_addr, size_t addrLen) {
 	state = I2C_STATE_RX;
 	rxBuf = rBuf;
 	rxlen = len;
 
-	// Transmit the internal memory address
-	I2C_MASTER_Transmit(&I2C_MASTER_0, true, EEPROM_WRITE, address, addrLen,
+	device_addr = i2c_addr;
+	// Transmit the internal memory ptr_addr
+	I2C_MASTER_Transmit(&I2C_MASTER_0, true, device_addr-1, ptr_addr, addrLen,
 	false);
 }
 
@@ -63,11 +67,11 @@ void i2c_clear_tx_callback(void) {
 void i2c_callback_wrapper(void) {
 	if (state == I2C_STATE_TX) {
 		state = I2C_STATE_TX_END;
-		I2C_MASTER_Transmit(&I2C_MASTER_0, false, EEPROM_WRITE, txBuf, txlen,
+		I2C_MASTER_Transmit(&I2C_MASTER_0, false, device_addr, txBuf, txlen,
 		true);
 	} else if (state == I2C_STATE_RX) {
 		state = I2C_STATE_RX_END;
-		I2C_MASTER_Receive(&I2C_MASTER_0, true, EEPROM_READ, rxBuf, rxlen, true,
+		I2C_MASTER_Receive(&I2C_MASTER_0, true, device_addr, rxBuf, rxlen, true,
 		false);
 	} else if (state == I2C_STATE_RX_END) {
 		state = I2C_STATE_IDLE;
