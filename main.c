@@ -11,6 +11,8 @@
 #include <DAVE.h>                 //Declarations from DAVE Code Generation (includes SFR declaration)
 #include "./xmc_daisyChain/DaisyChain.h"
 
+#define DAISY_SLAVE_DEVICE
+
 /**
 
  * @brief main() - Application entry point
