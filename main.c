@@ -31,7 +31,7 @@ void blinkNoTimes(uint8_t count);
 
 //static PWM_SETTINGS_t led_settings = {.led1 = 0x00, .led2 = 0x00, .led3 = 0x00};
 PWM_SETTINGS_t pwm_off = {.led1 = 0x00, .led2 = 0x00, .led3 = 0x00};
-PWM_SETTINGS_t pwm_on = {.led1 = 0xFF, .led2 = 0xFF, .led3 = 0xFF};
+PWM_SETTINGS_t pwm_on = {.led1 = 10000, .led2 = 10000, .led3 = 10000};
 
 static inline void setPWM(PWM_SETTINGS_t);
 static inline void startPWM();
@@ -57,7 +57,7 @@ int main(void)
 
 	readLedDataEeprom();
 
-	blinkNoTimes(10);
+	blinkNoTimes(3);
 	/* Placeholder for user application code. The while loop below can be replaced with user application code. */
 	while(1U)
 	{
@@ -69,13 +69,11 @@ void blinkNoTimes(uint8_t count) {
 	TIMER_Start(&TIMER_0);
 }
 
-#define CAST_TO_UINT32_T(x) (((uint32_t)(x))<<16)
-
 static void setPWM(PWM_SETTINGS_t led) {
-	uint32_t tmp = CAST_TO_UINT32_T(led.led1);
-	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, CAST_TO_UINT32_T(led.led1));
-	PWM_CCU4_SetDutyCycle(&PWM_CCU4_1, CAST_TO_UINT32_T(led.led2));
-	PWM_CCU4_SetDutyCycle(&PWM_CCU4_2, CAST_TO_UINT32_T(led.led3));
+//	uint32_t tmp = CAST_TO_UINT32_T(led.led1);
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, (led.led1 < 10000 ? led.led1 : 10000));
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_1, (led.led2 < 10000 ? led.led2 : 10000));
+	PWM_CCU4_SetDutyCycle(&PWM_CCU4_2, (led.led3 < 10000 ? led.led3 : 10000));
 }
 
 static void startPWM() {
@@ -109,12 +107,16 @@ void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t
 		break;
 	case LED_COMMAND_GET_TEMP:
 		// should return the last read temperature to the sender,
-		// but as I've got no access to a i2c temp sensor
-		// this could not be tested
+		// but concurrent sending/message queueing is not yet implemented on
+		// neither the daisy chain layer nor the uart layer
 		break;
 	case LED_COMMAND_GET_TYPES:
 		// this should return the data read from eeprom defining the leds
-		//
+		// same as above
+		break;
+	case LED_COMMAND_GET_PWM_SETTINGS:
+		//	this should return the pwm settings
+		// same as above
 		break;
 	}
 }
