@@ -11,6 +11,7 @@
 #include <DAVE.h>                 //Declarations from DAVE Code Generation (includes SFR declaration)
 #include "./xmc_daisyChain/DaisyChain.h"
 #include "i2c_handler.h"
+#include "led_commands.h"
 
 #define DAISY_SLAVE_DEVICE
 
@@ -23,18 +24,15 @@
  * invoking the APP initialization dispatcher routine - DAVE_Init() and hosting the place-holder for user application
  * code.
  */
-typedef struct {
-	uint16_t identifier;
-	uint16_t led1;		// zero equals off
-	uint16_t led2;
-	uint16_t led3;
-} PWM_SETTINGS_t;
+
 
 static uint8_t blinks = 0;
 
 void packetHandler(uint8_t,uint8_t*);
 void blinkNoTimes(uint8_t count);
-void setPWM(PWM_SETTINGS_t);
+static inline void setPWM(PWM_SETTINGS_t);
+static inline void startPWM();
+static inline void stopPWM();
 
 int main(void)
 {
@@ -68,14 +66,48 @@ void blinkNoTimes(uint8_t count) {
 	TIMER_Start(&TIMER_0);
 }
 
-void setPWM(PWM_SETTINGS_t led) {
+static inline void setPWM(PWM_SETTINGS_t led) {
 	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, led.led1);
 	PWM_CCU4_SetDutyCycle(&PWM_CCU4_1, led.led2);
 	PWM_CCU4_SetDutyCycle(&PWM_CCU4_2, led.led3);
 }
 
+static inline void startPWM() {
+	PWM_CCU4_Start(&PWM_CCU4_0);
+	PWM_CCU4_Start(&PWM_CCU4_1);
+	PWM_CCU4_Start(&PWM_CCU4_2);
+}
+
+static inline void stopPWM() {
+	PWM_CCU4_Stop(&PWM_CCU4_0);
+	PWM_CCU4_Stop(&PWM_CCU4_1);
+	PWM_CCU4_Stop(&PWM_CCU4_2);
+}
+
+
 void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t *buf, size_t length) {
-	blinkNoTimes(length);
+	switch((led_command_t)buf[0]) {
+	case LED_COMMAND_ON:
+		startPWM();
+		break;
+	case LED_COMMAND_OFF:
+		stopPWM();
+		break;
+	case LED_COMMAND_SET:
+		if(length-1 < sizeof(PWM_SETTINGS_t)) //not enough data in the struct
+			return;
+		setPWM((*(PWM_SETTINGS_t*)(buf+1)));	//+1 because buf[0] is the command identifier
+		break;
+	case LED_COMMAND_GET_TEMP:
+		// should return the last read temperature to the sender,
+		// but as I've got no access to a i2c temp sensor
+		// this could not be tested
+		break;
+	case LED_COMMAND_GET_TYPES:
+		// this should return the data read from eeprom defining the leds
+		//
+		break;
+	}
 }
 
 void packetHandler(uint8_t length,uint8_t *buf){
