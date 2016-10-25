@@ -1664,7 +1664,7 @@
     <anchors xsi:type="pi:BoxRelativeAnchor" active="true" referencedGraphicsAlgorithm="//@children.15/@graphicsAlgorithm/@graphicsAlgorithmChildren.0">
       <properties key="SignalName" value="event_transmit_buffer"/>
       <properties key="uri" value="http://resources/4.1.18/app/I2C_MASTER/0/vs_i2c_std_tx_int"/>
-      <graphicsAlgorithm xsi:type="al:Rectangle" background="//@colors.2" lineStyle="UNSPECIFIED" width="20" height="10" x="130" y="50"/>
+      <graphicsAlgorithm xsi:type="al:Rectangle" background="//@colors.5" lineStyle="UNSPECIFIED" width="20" height="10" x="130" y="50"/>
     </anchors>
     <anchors xsi:type="pi:BoxRelativeAnchor" active="true" referencedGraphicsAlgorithm="//@children.15/@graphicsAlgorithm/@graphicsAlgorithmChildren.0">
       <properties key="SignalName" value="event_fifo_transmit"/>
@@ -1721,14 +1721,14 @@
         </graphicsAlgorithm>
       </children>
     </children>
-    <children visible="true" active="true">
+    <children active="true">
       <properties key="SignalName" value="event_transmit_buffer"/>
       <properties key="uri" value="http://resources/4.1.18/app/I2C_MASTER/0/vs_i2c_std_tx_int"/>
       <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0" width="20" height="10" x="-20" y="30"/>
     </children>
     <children>
       <properties key="uri" value="http://resources/4.1.18/app/I2C_MASTER/0/vs_i2c_std_tx_int"/>
-      <graphicsAlgorithm xsi:type="al:Text" lineStyle="UNSPECIFIED" width="85" height="20" x="60" y="45" horizontalAlignment="ALIGNMENT_RIGHT" value="event_transmit_buffer"/>
+      <graphicsAlgorithm xsi:type="al:Text" foreground="//@colors.4" lineStyle="UNSPECIFIED" width="85" height="20" x="60" y="45" style="//@styles.0/@styles.2" horizontalAlignment="ALIGNMENT_RIGHT" value="event_transmit_buffer"/>
     </children>
     <children active="true">
       <properties key="SignalName" value="event_fifo_transmit"/>
