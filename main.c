@@ -37,8 +37,10 @@ void blinkNoTimes(uint8_t count);
 
 
 PWM_SETTINGS_t pwm_current = {.led1 = 0,.led2 = 0,.led3 = 0};
+static 	uint8_t packet[DAISY_MAX_PACKET_SIZE];
 
-void setPWM(PWM_SETTINGS_t);
+
+void setPWM(uint8_t*);
 static void startPWM();
 static void stopPWM();
 
@@ -76,10 +78,12 @@ void blinkNoTimes(uint8_t count) {
 
 #define SET_PWM_TO_MAX(x)  ((x) < 10000 ? (x) : 10000)
 
-void setPWM(PWM_SETTINGS_t led) {
-	pwm_current.led1 = SET_PWM_TO_MAX(led.led1);
-	pwm_current.led2 = SET_PWM_TO_MAX(led.led2);
-	pwm_current.led3 = SET_PWM_TO_MAX(led.led3);
+void setPWM(uint8_t *ledbuf) {
+	PWM_SETTINGS_t *led;
+	led =(PWM_SETTINGS_t*)(ledbuf);
+	pwm_current.led1 = (led->led1);
+	pwm_current.led2 = (led->led2 < 10000 ? led->led2 : 10000);
+	pwm_current.led3 = (led->led3 < 10000 ? led->led3 : 10000);
 	PWM_CCU4_SetDutyCycle(&PWM_CCU4_0, pwm_current.led1);
 	PWM_CCU4_SetDutyCycle(&PWM_CCU4_1, pwm_current.led2);
 	PWM_CCU4_SetDutyCycle(&PWM_CCU4_2, pwm_current.led3);
@@ -87,7 +91,7 @@ void setPWM(PWM_SETTINGS_t led) {
 
 static void startPWM() {
 	PWM_SETTINGS_t pwm_on = {.led1 = 10000, .led2 = 10000, .led3 = 10000};
-	setPWM(pwm_on);
+	setPWM(&pwm_on);
 /*	PWM_CCU4_Start(&PWM_CCU4_0);
 	PWM_CCU4_Start(&PWM_CCU4_1);
 	PWM_CCU4_Start(&PWM_CCU4_2);*/
@@ -95,7 +99,7 @@ static void startPWM() {
 
 static void stopPWM() {
 	PWM_SETTINGS_t pwm_off = {.led1 = 0x00, .led2 = 0x00, .led3 = 0x00};
-	setPWM(pwm_off);
+	setPWM(&pwm_off);
 /*	PWM_CCU4_Stop(&PWM_CCU4_0);
 	PWM_CCU4_Stop(&PWM_CCU4_1);
 	PWM_CCU4_Stop(&PWM_CCU4_2); */
@@ -103,7 +107,7 @@ static void stopPWM() {
 
 
 void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t *buf, size_t length) {
-	uint8_t packet[DAISY_MAX_PACKET_SIZE];
+
 	led_command_t cmd;
 
 	cmd = (led_command_t)buf[0];
@@ -117,9 +121,9 @@ void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t
 		stopPWM();
 		break;
 	case LED_COMMAND_SET:
-		if(length-1 < sizeof(PWM_SETTINGS_t)) //not enough data in the struct
+		if(length-1 != sizeof(PWM_SETTINGS_t)) //not enough data in the struct
 			return;
-		setPWM(*((PWM_SETTINGS_t*)(packet+1)));	//+1 because buf[0] is the command identifier
+		setPWM(((&packet[1])));	//+1 because buf[0] is the command identifier
 		break;
 	case LED_COMMAND_GET_TEMP:
 		// should return the last read temperature to the sender,
