@@ -13,7 +13,7 @@
 
 
 #include <DAVE.h>                 //Declarations from DAVE Code Generation (includes SFR declaration)
-#include "./xmc_daisyChain/DaisyChain.h"
+#include "xmc_daisyChain/DaisyChain.h"
 #include "i2c_handler.h"
 #include "led_commands.h"
 
