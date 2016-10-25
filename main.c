@@ -2,7 +2,11 @@
  * main.c
  *
  *  Created on: 2016 Jul 12 17:06:11
- *  Author: faebsn
+ *  Author: Fabio Pungg
+ *
+ *  Daisy Chain Slave Device
+ *
+ *
  */
 
 
@@ -17,10 +21,8 @@
 
  * @brief main() - Application entry point
  *
- * <b>Details of function</b><br>
- * This routine is the application entry point. It is invoked by the device startup code. It is responsible for
- * invoking the APP initialization dispatcher routine - DAVE_Init() and hosting the place-holder for user application
- * code.
+ *
+ *
  */
 
 
@@ -28,20 +30,30 @@ extern uint8_t daisy_address;
 
 static uint8_t blinks = 0;
 
+
+/**
+ * function used to indicate reception of frames
+ */
 void blinkNoTimes(uint8_t count);
 
 #define PWM_ALL_OFF {.led1 = 0, .led2 = 0, .led3 = 0}
 #define PWM_ALL_ON	{.led1 = 10000, .led2 = 10000, .led3 = 10000}
 
-//static PWM_SETTINGS_t led_settings = {.led1 = 0x00, .led2 = 0x00, .led3 = 0x00};
-
-
-PWM_SETTINGS_t pwm_current = {.led1 = 0,.led2 = 0,.led3 = 0};
+static PWM_SETTINGS_t pwm_current = {.led1 = 0,.led2 = 0,.led3 = 0};
 static 	uint8_t packet[DAISY_MAX_PACKET_SIZE];
 
+/**
+ * Sets PWM duty cycle to values provided by led
+ * @param led pointer to the struct containing the settings for the PWM duty cycle
+ */
+void setPWM(PWM_SETTINGS_t *led);
 
-void setPWM(PWM_SETTINGS_t *);
+/**
+ * Sets PWM to MAX, only for evaluation with the onboard LED's
+ */
 static void startPWM();
+
+
 static void stopPWM();
 
 int main(void)
@@ -62,7 +74,11 @@ int main(void)
 	}
 	daisyInit(&UART_DAISY);
 
-	readLedDataEeprom();
+	/**
+	 * read data from the EEPROM on the LED board
+	 * commented out because the functions in i2c_handler are still untested
+	 */
+	 /*	readLedDataEeprom();*/
 
 	blinkNoTimes(3);
 	/* Placeholder for user application code. The while loop below can be replaced with user application code. */
@@ -75,8 +91,6 @@ void blinkNoTimes(uint8_t count) {
 	blinks = 2*count;
 	TIMER_Start(&TIMER_0);
 }
-
-#define SET_PWM_TO_MAX(x)  ((x) < 10000 ? (x) : 10000)
 
 void setPWM(PWM_SETTINGS_t *led) {
 	memcpy(&pwm_current,led,sizeof(PWM_SETTINGS_t));
@@ -97,6 +111,9 @@ static void stopPWM() {
 }
 
 
+/**
+ * Implementation of a
+ */
 void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t *buf, size_t length) {
 
 	led_command_t cmd;
@@ -114,7 +131,7 @@ void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t
 	case LED_COMMAND_SET:
 		if(length-1 != sizeof(PWM_SETTINGS_t)) //not enough data in the struct
 			return;
-		setPWM((PWM_SETTINGS_t*)((&packet[1])));	//+1 because buf[0] is the command identifier
+		setPWM((PWM_SETTINGS_t*)((&packet[1])));	//packet[1] because packet[0] is the command identifier
 		break;
 	case LED_COMMAND_GET_TEMP:
 		// should return the last read temperature to the sender,
@@ -126,11 +143,13 @@ void daisyPacketReceived(uint8_t receive_address,uint8_t sender_address, uint8_t
 		// same as above
 		break;
 	case LED_COMMAND_GET_PWM_SETTINGS:
-		//	this should return the pwm settings
-		// same as above
+		/**
+		 * 	send the PWM settings back to Master for evaluation
+		 * 	sender contains our specified address
+		 */
 		packet[0] = (uint8_t)LED_COMMAND_GET_PWM_SETTINGS;
 		memcpy(packet+1,&pwm_current,sizeof(PWM_SETTINGS_t));
-		daisySendData(DAISY_ADDR_MASTER,daisy_address,packet,sizeof(PWM_SETTINGS_t)+1);
+		daisySendData(DAISY_ADDR_MASTER,daisyGetAddress(),packet,sizeof(PWM_SETTINGS_t)+1);
 		break;
 	}
 }

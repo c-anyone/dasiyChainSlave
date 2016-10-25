@@ -2,45 +2,52 @@
  * led_eeprom_handler.c
  *
  *  Created on: Oct 24, 2016
- *      Author: Faebsn
+ *      Author: Fabio Pungg
  */
 
 #include "i2c_handler.h"
-#include "i2c_eeprom.h"
 
-#define RX_BUF_SIZE	(16u)
+/**
+ * so far not more than EEPROM_PAGESIZE bytes
+ * are to be read from EEPROM or temperature sensor
+ */
+#define RX_BUF_SIZE	EEPROM_PAGESIZE
 
+/**
+ * static variable definitions
+ * as well as buffers
+ */
 static float last_temp = 0.0;
-static uint8_t readBuf[RX_BUF_SIZE];
+static uint8_t read_buf[RX_BUF_SIZE];
 static uint8_t addr_ptr[2] = { 0, 0 };
-static ledtype_t ledData[3];
+static ledtype_t led_data[3];
 
+
+/**
+ * functions for evaluating data read from eeprom
+ */
 static inline void pack(uint8_t* buffer, ledtype_t* testboard);
 static inline void unpack(uint8_t* DATA_READ);
 
-static void save_led_data() {
-	unpack(readBuf);
+static void SaveLedData() {
+	unpack(read_buf);
 }
 
-static void temp_conversion() {
+static void tempConversion() {
 	uint16_t temp_buffer = 0;
-	temp_buffer = readBuf[1] | readBuf[0] << 8;
+	temp_buffer = read_buf[1] | read_buf[0] << 8;
 	temp_buffer >>= 3;
 	last_temp = temp_buffer * 0.0625;
 }
 
-void eeprom_handler_init() {
-
-}
-
-void readLedDataEeprom() {
-	i2c_set_rx_callback(&save_led_data);
-	i2c_read_bytes(EEPROM_READ, readBuf, RX_BUF_SIZE, addr_ptr, 2);
+void readLedDataFromEeprom() {
+	i2c_set_rx_callback(&SaveLedData);
+	i2c_read_bytes(EEPROM_READ, read_buf, RX_BUF_SIZE, addr_ptr, 2);
 }
 
 void readTemperature() {
-	i2c_set_rx_callback(&temp_conversion);
-	i2c_read_bytes(TEMP_SENSOR_READ, readBuf, 2, addr_ptr, 1);
+	i2c_set_rx_callback(&tempConversion);
+	i2c_read_bytes(TEMP_SENSOR_READ, read_buf, 2, addr_ptr, 1);
 }
 
 float getTemperature() {
@@ -61,10 +68,10 @@ static inline void pack(uint8_t* buffer, ledtype_t* testboard) {
 /* converts data into right datatype*/
 static inline void unpack(uint8_t* DATA_READ) {
 	for (int i = 0, j = 0; i < 3; ++i, j += 5) {
-		ledData[i].amps = ((uint16_t) (DATA_READ[0 + j] << 8))
+		led_data[i].amps = ((uint16_t) (DATA_READ[0 + j] << 8))
 				| ((uint16_t) (DATA_READ[1 + j]));
-		ledData[i].leds = DATA_READ[2 + j];
-		ledData[i].wavelength = ((uint16_t) (DATA_READ[3 + j] << 8))
+		led_data[i].leds = DATA_READ[2 + j];
+		led_data[i].wavelength = ((uint16_t) (DATA_READ[3 + j] << 8))
 				| ((uint16_t) (DATA_READ[4 + j]));
 	}
 }

@@ -2,7 +2,7 @@
  * i2c_eeprom.c
  *
  *  Created on: Jun 22, 2016
- *      Author: faebsn
+ *      Author: Fabio Pungg
  */
 
 #include <DAVE.h>
@@ -10,7 +10,7 @@
 
 static i2c_rx_cb_t rx_cb_fun;
 static i2c_tx_cb_t tx_cb_fun;
-static I2C_STATE state;
+static I2C_STATE_t state;
 static uint8_t* txBuf;
 static uint8_t* rxBuf;
 static size_t txlen;
@@ -18,12 +18,15 @@ static size_t rxlen;
 
 static uint8_t device_addr = 0;
 
+
 void i2c_write_bytes(uint8_t i2c_addr, uint8_t *buf, size_t len, uint8_t* ptr_addr, size_t addrLen) {
 	// set up for followup transmit (address is transmitted first)
 
 	/*
 	 * if (len > EEPROM_PAGESIZE) {
-	 * 	setup von bulk write code
+	 * 	setup bulk write code if implemented. needs to use
+	 * 	a timer to allow the EEPROM to store the page in between
+	 * 	writes
 	 * }
 	 *
 	 */

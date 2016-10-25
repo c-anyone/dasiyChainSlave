@@ -2,7 +2,7 @@
  * led_commands.h
  *
  *  Created on: Oct 24, 2016
- *      Author: Faebsn
+ *      Author: Fabio Pungg
  */
 
 #ifndef LED_COMMANDS_H_
