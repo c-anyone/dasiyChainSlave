@@ -14,6 +14,8 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
 
 #include "i2c_eeprom.h"
 
@@ -40,7 +42,9 @@ typedef struct{
 /**
  * starts a read from the eeprom
  */
-void readLedDataFromEeprom(void);
+void readLedDataFromEeprom(ledtype_t *,size_t);
+
+size_t getLedData(ledtype_t *,size_t);
 
 /**
  * starts a temperature read, supposed to be called periodically
